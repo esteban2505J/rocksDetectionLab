@@ -1,55 +1,57 @@
-# 🌑 Lunar Rock Detection: Exploring the Moon Pixel by Pixel  
+# 🪨 Rock Detection: Exploring Surfaces Pixel by Pixel
 
-**Authors**: Juan Ramírez, Juan Cardona  
-
----
-
-## 🚀 Objective  
-To design and evaluate an image processing pipeline capable of detecting and analyzing lunar rocks. Using the `romainpessia/artificial-lunar-rocky-landscape-dataset`, the project puts a variety of transformations and filters to the test, aiming to discover the most effective preprocessing strategies for robust rock detection under challenging lunar conditions.  
+**Authors**: Juan Ramírez, Juan Cardona
 
 ---
 
-## 🌌 Project Overview  
-Imagine trying to spot lunar rocks on a dusty, unevenly lit, extraterrestrial surface. Shadows, noise, and lighting variations make this task far from trivial. This project tackles that challenge by experimenting with a **toolbox of image processing techniques**, implemented in Python with **OpenCV, NumPy, Matplotlib, and scikit-image**.  
+## 🚀 Objective
+Design and evaluate an image-processing pipeline to **detect, segment and count rocks** in natural images. We use the **`rocks-dataset` by Neel Gajare (Kaggle)** to train, test and validate preprocessing + classical computer-vision methods that generalize across different rock types, sizes and textures.
 
-From color transformations to advanced segmentation, the pipeline was designed not just to enhance images, but also to **separate meaningful lunar features (rocks) from distractions**—helping pave the way for applications in planetary exploration and autonomous navigation.  
-
----
-
-## 🔑 Key Features  
-
-- **Dataset**: 9 carefully selected images from the `romainpessia/artificial-lunar-rocky-landscape-dataset`, balancing computational efficiency with diversity in surface and lighting conditions.  
-
-- **Explored Techniques**:  
-  - 🎨 **Basic Transformations**: RGB channel separation, grayscale conversion, and binary thresholding.  
-  - ➕ **Arithmetic Operations**: Brightness/contrast adjustments and arithmetic manipulations (sum, subtraction, multiplication, division) to normalize illumination.  
-  - 🔗 **Logical Operations**: AND, OR, XOR, NOT to refine or combine binary masks.  
-  - 🌀 **Spatial Filters**: Gaussian blur, median, Laplacian, Sobel, Prewitt, and Canny for noise reduction and edge enhancement.  
-  - 🧱 **Morphological Operations**: Erosion, dilation, opening, closing, gradients, top-hat, and black-hat for cleaner segmentations.  
-  - 🎯 **Segmentation Methods**: Fixed/adaptive thresholding, edge-based, region-based, and Watershed segmentation.  
-  - 📊 **Region Analysis**: Leveraging `skimage.measure.regionprops` to extract rock properties such as area, perimeter, centroid, bounding box, and orientation.  
-
-- **Pipeline Output**: Processed results are neatly stored in structured directories (e.g., `output/spatial_filters`, `output/segmentation`) for visual comparison and documentation.  
+**Dataset:** https://www.kaggle.com/datasets/neelgajare/rocks-dataset
 
 ---
 
-## 🏆 Best Performing Techniques  
-After testing the full arsenal of methods, the following emerged as the most effective:  
+## 🌌 Project Overview
+Detecting rocks in real-world photos is challenging due to variations in lighting, texture, shape and background clutter. This repository experiments with a toolbox of image-processing techniques (OpenCV + NumPy + scikit-image) to robustly isolate rock instances and count them reliably.
 
-- **Gaussian Blur** → smooths noise without losing rock boundaries.  
-- **Canny Edge Detection** → delivers crisp and reliable rock contours.  
-- **Adaptive Thresholding** → adapts to uneven lunar lighting.  
-- **Morphological Opening & Closing** → refine rock shapes and eliminate noise specks.  
-
-Together, these techniques create a **robust preprocessing pipeline** that not only detects rocks but also prepares them for **quantitative analysis**.  
+The pipeline is intended to be modular: apply transforms → segment → clean with morphology → analyze regions → count and store results.
 
 ---
 
-## 🌠 Why It Matters  
-The Moon doesn’t forgive mistakes—uneven illumination, jagged shadows, and noise can fool any algorithm. By testing a **broad spectrum of transformations**, this project identifies the strategies that consistently highlight and segment lunar rocks.  
+## 🔑 Key Features
 
-The chosen pipeline—Gaussian blur, Canny edges, adaptive thresholding, and morphology—proves to be a **winning combination**, offering clean rock segmentation and precise feature extraction. These results are essential for future **autonomous exploration systems**, where reliable rock detection can guide navigation, geological studies, and mission safety.  
+- **Dataset**: The `rocks-dataset` (Kaggle) — diverse rock images with multiple classes and conditions, improving detection performance vs. synthetic-only datasets.
+- **Implemented Techniques**:
+  - Basic transforms: channel splits, grayscale, histogram equalization.
+  - Illumination normalization: brightness/contrast, CLAHE.
+  - Spatial filters: Gaussian, median, Laplacian, Sobel, Prewitt.
+  - Edge detection: Canny.
+  - Thresholding: global & adaptive.
+  - Morphology: erosion, dilation, opening, closing, top-hat, black-hat.
+  - Segmentation: watershed, connected components, contour extraction.
+  - Region analysis: `skimage.measure.regionprops` — area, perimeter, bbox, centroid, orientation.
+- **Outputs**: structured `output/` folders with processed images, masks, annotated images and CSV summaries (counts and per-region features).
 
 ---
 
-✨ *In short: from pixels to craters, this project shows how image processing can make sense of the lunar surface, one rock at a time.*  
+## 🧭 Recommended Pipeline (default)
+1. Load image → convert to grayscale.  
+2. Apply **CLAHE** or histogram equalization (improves contrast).  
+3. **Gaussian blur** (noise smoothing).  
+4. **Canny edge** detection to get crisp boundaries.  
+5. **Adaptive thresholding** (handles uneven illumination).  
+6. Morphological **opening** then **closing** to remove small artifacts and fill holes.  
+7. Connected-components or **watershed** for separating touching rocks.  
+8. Extract `regionprops` and apply size filters → count rocks.  
+9. Save annotated visualization + CSV with features.
+
+---
+
+## 🏆 Best Performing Techniques (empirical)
+- **CLAHE / histogram equalization** — improves contrast on varied surfaces.  
+- **Gaussian blur** — reduces salt-and-pepper noise while preserving contours.  
+- **Adaptive thresholding** — copes with locally varying illumination.  
+- **Canny + morphology** — robust contour extraction and cleanup.  
+- **Watershed** (when rocks touch) — better separation of adjacent rocks.
+
+---
